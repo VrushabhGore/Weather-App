@@ -1,6 +1,6 @@
 const request = require('request');
 
-var geocodeAddress = (address) => {
+var geocodeAddress = (address, callback) => {
   var addresses = encodeURIComponent(address);
   const api = 'AIzaSyC3SZrW4a9mK1iB7-YOeayEQPHOfNr_Flk'
 
@@ -9,14 +9,16 @@ var geocodeAddress = (address) => {
     json: true
   }, (error,response,body) => {
     if(error){
-      console.log('Unable to connect to serrvers');
+      callback('Unable to connect to serrvers');
     }else if(body.status === 'ZERO_RESULTS'){
-      console.log('There are no results to display');
+      callback('There are no results to display');
     }else if(body.status === 'OK'){
-    console.log(`Address: ${body.results[0].formatted_address}`);
-    console.log(`Latitude: ${body.results[0].geometry.location.lat}`);
-    console.log(`Latitude: ${body.results[0].geometry.location.lng}`);
-  }
+      callback(undefined, {
+        address:body.results[0].formatted_address,
+        latitude:body.results[0].geometry.location.lat,
+        longitude:body.results[0].geometry.location.lat
+      });
+    }
   })
 }
 
